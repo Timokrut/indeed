@@ -5,6 +5,11 @@ class Role(StrEnum):
     user = "user"
     moderator = "moderator"
     admin = "admin"
+
+class NoteType(StrEnum):
+    public = "public"
+    private = "private"
+    role = "role"
  
 class ApiClient:
     URL = 'https://secby.ru'
@@ -32,7 +37,7 @@ class ApiClient:
     
     def get_access_token(self) -> str:
         if self._access_token is None:
-            raise Exception("User not authenticated. Login first")
+            raise RuntimeError("User not authenticated. Login first")
         return self._access_token
 
     def set_access_token(self, token: str) -> None:
@@ -155,4 +160,50 @@ class ApiClient:
 
     def update_account_role(self, account_id: int, role: Role) -> requests.Response:
         response = requests.put(f"{self.URL}/api/profiles/{account_id}/{role}", headers=self.get_headers())
+        return response
+    
+    # RESOURCE NOTES
+    def get_notes(self, limit: int = 100, offset: int = 0) -> requests.Response:
+        if not(1 <= limit <= 1000): 
+            raise RuntimeError("Limit must be MIN 1, MAX 1000")
+        
+        if offset < 0:
+            raise RuntimeError("Offset must be greater than 0")
+    
+        payload = {
+            "limit": limit, 
+            "offset": offset
+        }
+
+        response = requests.get(f"{self.URL}/api/notes/", params=payload, headers=self.get_headers())
+        return response
+
+    def create_note(self, name: str, notes: str, note_type: NoteType, role_id: int = 0) -> requests.Response:
+        payload = {
+            "name": name, 
+            "notes": notes,
+            "type": note_type, 
+            "role_id": role_id
+        }
+
+        response = requests.post(f"{self.URL}/api/notes/", json=payload, headers=self.get_headers())
+        return response
+
+    def get_note_by_id(self, resource_id: int) -> requests.Response:
+        response = requests.get(f"{self.URL}/api/notes/{resource_id}", headers=self.get_headers())
+        return response
+    
+    def update_note_by_id(self, resource_id: int, name: str, notes: str, note_type: NoteType, role_id: int = 0) -> requests.Response:
+        payload = {
+            "name": name, 
+            "notes": notes,
+            "type": note_type, 
+            "role_id": role_id
+        }
+
+        response = requests.put(f"{self.URL}/api/notes/{resource_id}", json=payload, headers=self.get_headers())
+        return response
+    
+    def delete_note_by_id(self, resource_id: int) -> requests.Response:
+        response = requests.delete(f"{self.URL}/api/notes/{resource_id}", headers=self.get_headers())
         return response
