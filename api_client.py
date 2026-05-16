@@ -12,15 +12,8 @@ class ApiClient:
     def __init__(self) -> None:
         # Auth data
         self._access_token = None
-        
-        # Profile data
-        self.name = None
-        self.surname = None 
-        self.middlename = None
-        self.birthdate = None # "YYYY-MM-DD"
-        self.about = None 
-        self.links = None
 
+    # AUTHENTICATION
     def login(self, username: str, password: str) -> requests.Response:
         payload = {
             "username": username,
@@ -65,8 +58,16 @@ class ApiClient:
         response = requests.post(f"{self.URL}/api/auth/change-password", json=payload, headers=self.get_headers())
         return response
 
-    # TODO: ADMIN SET-PASSWORD
+    def set_password(self, account_id: int, new_password: str) -> requests.Response:
+        payload = {
+            "account_id": account_id,
+            "new_password": new_password
+        }
+        
+        response = requests.post(f"{self.URL}/api/auth/set-password", json=payload, headers=self.get_headers())
+        return response
 
+    # PROFILES
     def create_profile(
         self, 
         name: str | None = None, 
