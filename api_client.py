@@ -159,7 +159,11 @@ class ApiClient:
         return response
 
     def update_account_role(self, account_id: int, role: Role) -> requests.Response:
-        response = requests.put(f"{self.URL}/api/profiles/{account_id}/{role}", headers=self.get_headers())
+        payload = {
+            "role_name": role
+        }
+
+        response = requests.put(f"{self.URL}/api/profiles/{account_id}/role", params=payload, headers=self.get_headers())
         return response
     
     # RESOURCE NOTES
