@@ -84,7 +84,7 @@ def test_change_password_unauthorized(api_client):
 
 def test_user_cannot_set_password(authorized_client):
     response = authorized_client.set_password(
-        account_id=67,
+        account_id=os.getenv("ADMIN_ID"),
         new_password="new_password"
     )
 

@@ -27,7 +27,7 @@ def test_get_my_profile_by_id(authorized_client):
     assert response.status_code == 200
 
 def test_get_somebodys_profile_by_id(authorized_client):
-    response = authorized_client.get_profile_by_id(1)
+    response = authorized_client.get_profile_by_id(os.getenv("ADMIN_ID"))
 
     assert response.status_code == 403
 
@@ -48,20 +48,20 @@ def test_update_current_profile_unauthorized(api_client):
 
 def test_user_cannot_update_other_profile(authorized_client):
     response = authorized_client.update_profile_by_id(
-        account_id=1,
+        account_id=os.getenv("ADMIN_ID"),
         about="test message"
     )
 
     assert response.status_code == 403
 
 def test_user_cannot_delete_account(authorized_client):
-    response = authorized_client.delete_account(1)
+    response = authorized_client.delete_account(os.getenv("ADMIN_ID"))
 
     assert response.status_code == 403
 
 def test_user_cannot_change_role(authorized_client):
     response = authorized_client.update_account_role(
-        account_id=1,
+        account_id=os.getenv("ADMIN_ID"),
         role=Role.moderator
     )
 
