@@ -35,9 +35,7 @@ class ApiClient:
         except requests.RequestException as e:
             raise RuntimeError(f"Something went wrong while logging in: {e}")
     
-    def get_access_token(self) -> str:
-        if self._access_token is None:
-            raise RuntimeError("User not authenticated. Login first")
+    def get_access_token(self) -> str | None:
         return self._access_token
 
     def set_access_token(self, token: str) -> None:

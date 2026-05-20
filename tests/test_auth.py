@@ -46,8 +46,9 @@ def test_verify_invalid_token(api_client):
     assert response.status_code == 401
 
 def test_verify_without_token(api_client):
-    with pytest.raises(RuntimeError):
-        api_client.verify_token()
+    response = api_client.verify_token()
+
+    assert response.status_code == 401
 
 def test_change_password_success(authorized_client):
     old_password = os.getenv("USER_PASSWORD")
